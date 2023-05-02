@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Final</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    body {
+      background-color: #FFFFFF;
+    }
+
+    .container {
+      margin-top: 50px;
+      background-color: #FFFFFF;
+      border-radius: 10px;
+      padding: 20px;
+    }
+
+    .form-control {
+      background-color: #C2E3FF;
+      color: #003F73;
+    }
+
+    canvas {
+      max-width: 500px;
+      margin: 0 auto;
+      display: inline-block;
+    }
+
+    .form-control::placeholder {
+      color: #003F73;
+    }
+
+    .chart-label {
+      color: #003F73;
+      font-weight: bold;
+    }
+
+    h5 {
+      color: #003F73;
+    }
+
+    .chart-container1 {
+      height: 300px;
+      width: 50px;
+      background-color: #eee;
+      margin-top: 50px;
+      margin-left: 300px;
+      position: relative;
+      display: inline-block;
+    }
+
+    .chart-container2 {
+      height: 300px;
+      width: 50px;
+      background-color: #eee;
+      margin-top: 50px;
+      margin-right: 300px;
+      position: relative;
+      display: inline-block;
+    }
+
+    #chart1 {
+      height: 0%;
+      width: 100%;
+      position: absolute;
+      bottom: 0;
+      left: 0;
+    }
+
+    #chart2 {
+      height: 0%;
+      width: 100%;
+      position: absolute;
+      bottom: 0;
+      left: 0;
+    }
+
+    .pie {
+      display: inline-block;
+
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+    <h5>Enter values</h5>
+    <div class="row">
+      <div class="col-md-6">
+        <input type="number" class="form-control" id="input-value" min="0" max="100" placeholder="Input value" required>
+      </div>
+      <div class="col-md-6">
+        <input type="number" class="form-control" id="max-value" min="0" max="100" step="1" placeholder="Max value" required>
+      </div>
+    </div>
+
+    <div class="chart-container2">
+      <div id="chart2"></div>
+    </div>
+
+    <div class="pie">
+      <canvas id="myChart"></canvas>
+    </div>
+
+    <div class="chart-container1">
+      <div id="chart1"></div>
+    </div>
+
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    $(function() {
+      const inputValue = document.getElementById("input-value");
+      const maxValue = document.getElementById("max-value");
+      const ctx = document.getElementById("myChart").getContext("2d");
+
+      const myChart = new Chart(ctx, {
+        type: "pie",
+        data: {
+          labels: ["Input Value", "Max Value"],
+          datasets: [{
+            data: [0, 100],
+            backgroundColor: ["#007bff", "#C2E3FF"],
+          }, ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+        },
+      });
+      const updateChart = () => {
+        if (inputValue.checkValidity() && maxValue.checkValidity()) {
+          const inputVal = parseInt(inputValue.value);
+          const maxVal = parseInt(maxValue.value);
+
+          if (inputVal > maxVal) {
+            alert("Input value cannot be greater than max value.");
+          } else {
+            const percentage = (inputVal / maxVal) * 100;
+            myChart.data.datasets[0].data[0] = percentage;
+            myChart.data.datasets[0].data[1] = 100 - percentage;
+            myChart.update();
+          }
+        }
+      }
+
+      inputValue.addEventListener("input", updateChart);
+      maxValue.addEventListener("input", updateChart);
+    });
+
+    //gradient
+    const inputValueEl = document.getElementById('input-value');
+    const maxValueEl = document.getElementById('max-value');
+
+    // Add event listeners to input boxes to update chart
+    inputValueEl.addEventListener('input', updateChart1);
+    maxValueEl.addEventListener('input', updateChart1);
+
+    function updateChart1() {
+      // Get input and max value from input boxes
+      const inputValue = parseInt(inputValueEl.value);
+      const maxValue = parseInt(maxValueEl.value);
+
+      // Store input and max value in variables
+      const input = isNaN(inputValue) ? 0 : inputValue;
+      const max = isNaN(maxValue) ? 100 : maxValue;
+
+      // Calculate percentages
+      const inputPercentage = (input / max) * 100;
+      const maxPercentage = 100 - inputPercentage;
+
+      // Calculate colors
+      const inputColor = '#008CFF';
+      const maxColor = '#C2E3FF';
+
+      // Set color stops based on input percentage
+      let colorStops;
+      if (inputPercentage >= 100) {
+        colorStops = `linear-gradient(to top, ${inputColor} ${inputPercentage}%, ${maxColor} ${maxPercentage}%)`;
+      } else {
+        colorStops = `linear-gradient(to top, ${inputColor} 0%, ${maxColor} ${inputPercentage}%, ${maxColor} 100%)`;
+      }
+
+      // Update chart height and color gradient
+      const chartEl = document.getElementById('chart1');
+      chartEl.style.height = '100%';
+      chartEl.style.backgroundImage = colorStops;
+    }
+
+    // Call updateChart initially to set default values
+    updateChart1();
+
+    //////// vertical bar
+    const inputValueE2 = document.getElementById('input-value');
+    const maxValueE2 = document.getElementById('max-value');
+
+    // Add event listeners to input boxes to update chart
+    inputValueE2.addEventListener('input', updateChart2);
+    maxValueE2.addEventListener('input', updateChart2);
+
+    function updateChart2() {
+      // Get input and max value from input boxes
+      const inputValue = parseInt(inputValueEl.value);
+      const maxValue = parseInt(maxValueEl.value);
+
+      // Store input and max value in variables
+      const input = isNaN(inputValue) ? 0 : inputValue;
+      const max = isNaN(maxValue) ? 100 : maxValue;
+
+      // Calculate percentages
+      const inputPercentage = (input / max) * 100;
+      const maxPercentage = 100 - inputPercentage;
+
+      // Calculate colors
+      const green = `#008CFF ${inputPercentage}%, #C2E3FF ${inputPercentage}% 100%`;
+      const colorStops = green;
+
+      // Update chart height and color gradient
+      const chartEl = document.getElementById('chart2');
+      chartEl.style.height = '100%';
+      chartEl.style.backgroundImage = `linear-gradient(to top, ${colorStops})`;
+    }
+
+    // Call updateChart initially to set default values
+    updateChart2();
+  </script>
+</body>
+
+</html>
